@@ -1,0 +1,99 @@
+package com.joacocenteno.yoAprendo_api.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.joacocenteno.yoAprendo_api.dto.CourseRequest;
+import com.joacocenteno.yoAprendo_api.dto.CourseResponse;
+import com.joacocenteno.yoAprendo_api.dto.LevelResponse;
+import com.joacocenteno.yoAprendo_api.mapper.Mapper;
+import com.joacocenteno.yoAprendo_api.model.Course;
+import com.joacocenteno.yoAprendo_api.model.Level;
+import com.joacocenteno.yoAprendo_api.repository.ICourseRepository;
+import com.joacocenteno.yoAprendo_api.repository.ILevelRepository;
+
+@Service
+public class CourseService implements ICourseService{
+
+    @Autowired
+    ICourseRepository course_repo;
+
+    @Autowired
+    ILevelRepository level_repo;
+
+    @Override
+    public List<CourseResponse> getAllCourse() {
+        return course_repo.findAll().stream().map(Mapper::toDto).toList();
+    }
+
+    @Override
+    public CourseResponse getCourseById(Long course_id) {
+        if(course_id == null) throw new RuntimeException("ID Curso no puede ser nulo");
+
+        Course course_obtained = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+
+        return Mapper.toDto(course_obtained);
+    }
+
+    @Override
+    public CourseResponse createCourse(CourseRequest course) {
+        if (course == null) throw new RuntimeException("Por favor, especifique los datos del curso");
+        if(course_repo.existCourseByName(course.getName())) throw new RuntimeException("Curso con nombre '"+ course.getName() + "' ya existente en la plataforma");
+
+        Course course_created = Course.builder()
+                                    .course_name(course.getName())
+                                    .course_description(course.getDescription())
+                                    .build();
+        
+
+        return Mapper.toDto(course_repo.save(course_created));
+    }
+
+    @Override
+    public CourseResponse editCourse(Long course_id, CourseRequest course) {
+        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
+        if (course == null) throw new RuntimeException("Por favor, especifique los datos del curso");
+
+        Course course_modified = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+
+        if(course.getName() != null && !course.getName().equals(course_modified.getCourse_name())){
+
+                if(course_repo.existCourseByName(course.getName())){
+                    throw new RuntimeException("Curso con nombre '"+ course.getName() + "' existente");
+                }
+
+                course_modified.setCourse_name(course.getName());
+        }
+        if(course.getDescription() != null) course_modified.setCourse_description(course.getDescription());
+        if(course.getIs_active() != null) course_modified.setIs_active(course.getIs_active());
+
+        return Mapper.toDto(course_repo.save(course_modified));
+    }
+
+    @Override
+    public void toggleActiveCourse(Long course_id) {
+        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
+        
+        Course course_deactivated = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+
+        course_deactivated.setIs_active(!course_deactivated.getIs_active());
+
+        course_repo.save(course_deactivated);
+    }
+
+    @Override
+    public List<LevelResponse> getLevelsByCourse(Long course_id) {
+        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
+
+        if(!course_repo.existsById(course_id)) throw new RuntimeException("Curso con ID "+ course_id + " inexistente");
+
+        List<Level> levels = level_repo.findByCourseCourseIdOrderByLevelOrder(course_id);
+
+        return levels.stream().map(Mapper::toDto).toList();
+
+        
+    }
+
+}

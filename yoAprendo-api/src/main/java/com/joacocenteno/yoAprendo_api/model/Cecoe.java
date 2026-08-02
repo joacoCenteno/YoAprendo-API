@@ -24,6 +24,7 @@ public class Cecoe {
     @Column(nullable = false, length = 150)
     private String cecoe_name;
 
+    @Builder.Default
     @Column(nullable  = false)
-    private Boolean is_active;
+    private Boolean is_active = true;
 }

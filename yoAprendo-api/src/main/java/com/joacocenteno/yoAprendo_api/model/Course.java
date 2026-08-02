@@ -27,4 +27,8 @@ public class Course {
 
     @Column(length = 500)
     private String course_description;
+
+    @Builder.Default
+    @Column(nullable  = false)
+    private Boolean is_active = true;
 }

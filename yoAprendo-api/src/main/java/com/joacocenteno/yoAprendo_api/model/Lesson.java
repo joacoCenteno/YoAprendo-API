@@ -36,6 +36,10 @@ public class Lesson {
     @Column(nullable = false)
     private Integer lesson_order;
 
+    @Builder.Default
+    @Column(nullable  = false)
+    private Boolean is_active = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;

@@ -37,8 +37,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRol user_rol;
 
+    @Builder.Default
     @Column(nullable = false)
-    private Boolean user_active;
+    private Boolean user_active = true;
 
     @ManyToOne
     @JoinColumn(name = "cecoe_id")

@@ -33,7 +33,11 @@ public class Level {
     @Column(nullable = false)
     private Integer level_order;
 
+    @Builder.Default
+    @Column(nullable  = false)
+    private Boolean is_active = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "level_id", nullable =  false)
+    @JoinColumn(name = "course_id", nullable =  false)
     private Course course;
 }

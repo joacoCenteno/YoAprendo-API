@@ -33,6 +33,10 @@ public class Topic {
     @Column(nullable = false)
     private Integer topic_order;
 
+    @Builder.Default
+    @Column(nullable  = false)
+    private Boolean is_active = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_id", nullable = false)
     private Level level;

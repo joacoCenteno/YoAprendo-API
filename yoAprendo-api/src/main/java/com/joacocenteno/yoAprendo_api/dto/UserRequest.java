@@ -25,6 +25,8 @@ public class UserRequest {
     @NotNull
     UserRol rol;
 
+    Boolean is_active;
+
     Long cecoe_id;
 
 }

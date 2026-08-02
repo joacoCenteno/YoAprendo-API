@@ -21,6 +21,8 @@ public class LevelRequest {
     @Positive
     Integer order;
 
+    Boolean is_active;
+
     @NotNull
     Long curso_id;
 }

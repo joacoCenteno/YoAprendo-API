@@ -21,6 +21,8 @@ public class LessonRequest {
     @Positive
     Integer order;
 
+    Boolean is_active;
+
     @NotNull
     Long topic_id;
 }

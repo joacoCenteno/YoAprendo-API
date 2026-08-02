@@ -11,4 +11,6 @@ public class CecoeRequest {
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 150)
     String name;
+
+    Boolean is_active;
 }

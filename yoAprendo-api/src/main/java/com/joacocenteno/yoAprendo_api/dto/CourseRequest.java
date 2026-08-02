@@ -14,4 +14,6 @@ public class CourseRequest {
 
     @Size(max = 500)
     String description;
+
+    Boolean is_active;
 }

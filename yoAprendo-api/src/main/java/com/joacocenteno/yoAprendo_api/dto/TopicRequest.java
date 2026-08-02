@@ -21,6 +21,8 @@ public class TopicRequest {
     @Positive
     Integer order;
 
+    Boolean is_active;
+
     @NotNull
     Long level_id;
 }

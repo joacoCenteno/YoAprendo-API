@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import com.joacocenteno.yoAprendo_api.dto.LevelRequest;
 import com.joacocenteno.yoAprendo_api.dto.LevelResponse;
 import com.joacocenteno.yoAprendo_api.dto.TopicResponse;
+import com.joacocenteno.yoAprendo_api.exception.BadRequestException;
+import com.joacocenteno.yoAprendo_api.exception.DuplicateResourceException;
+import com.joacocenteno.yoAprendo_api.exception.ResourceNotFoundException;
 import com.joacocenteno.yoAprendo_api.mapper.Mapper;
 import com.joacocenteno.yoAprendo_api.model.Course;
 import com.joacocenteno.yoAprendo_api.model.Level;
@@ -35,24 +38,24 @@ public class LevelService implements ILevelService {
 
     @Override
     public LevelResponse getLevelById(Long level_id) {
-        if (level_id == null) throw new RuntimeException("ID Nivel no puede ser nulo");
+        if (level_id == null) throw new BadRequestException("ID Nivel no puede ser nulo");
 
         Level level_obtained = level_repo.findById(level_id)
-                .orElseThrow(() -> new RuntimeException("Nivel con ID " + level_id + " inexistente"));
+                .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + level_id + " inexistente"));
 
         return Mapper.toDto(level_obtained);
     }
 
     @Override
     public LevelResponse createLevel(LevelRequest level) {
-        if (level == null) throw new RuntimeException("Por favor, especifique los datos del nivel");
-        if (level.getCurso_id() == null) throw new RuntimeException("Por favor, especifique el ID del curso");
+        if (level == null) throw new BadRequestException("Por favor, especifique los datos del nivel");
+        if (level.getCurso_id() == null) throw new BadRequestException("Por favor, especifique el ID del curso");
 
         Course course = course_repo.findById(level.getCurso_id())
-                .orElseThrow(() -> new RuntimeException("Curso con ID " + level.getCurso_id() + " inexistente"));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso con ID " + level.getCurso_id() + " inexistente"));
 
         if (level.getName() != null && level_repo.existsByCourseCourseIdAndLevelName(level.getCurso_id(), level.getName())) {
-            throw new RuntimeException("Nivel con nombre '" + level.getName() + "' ya existente en el curso");
+            throw new DuplicateResourceException("Nivel con nombre '" + level.getName() + "' ya existente en el curso");
         }
 
         Level level_created = Level.builder()
@@ -68,17 +71,17 @@ public class LevelService implements ILevelService {
 
     @Override
     public LevelResponse editLevel(Long id, LevelRequest level) {
-        if (id == null) throw new RuntimeException("Por favor, especifique la ID");
-        if (level == null) throw new RuntimeException("Por favor, especifique los datos del nivel");
+        if (id == null) throw new BadRequestException("Por favor, especifique la ID");
+        if (level == null) throw new BadRequestException("Por favor, especifique los datos del nivel");
 
         Level level_modified = level_repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nivel con ID " + id + " inexistente"));
+                .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + id + " inexistente"));
 
         Long course_id_to_check = level.getCurso_id() != null ? level.getCurso_id() : level_modified.getCourse().getCourse_id();
 
         if (level.getName() != null && !level.getName().equals(level_modified.getLevel_name())) {
             if (level_repo.existsByCourseCourseIdAndLevelName(course_id_to_check, level.getName())) {
-                throw new RuntimeException("Nivel con nombre '" + level.getName() + "' ya existente en el curso");
+                throw new DuplicateResourceException("Nivel con nombre '" + level.getName() + "' ya existente en el curso");
             }
             level_modified.setLevel_name(level.getName());
         }
@@ -89,7 +92,7 @@ public class LevelService implements ILevelService {
 
         if (level.getCurso_id() != null && !level.getCurso_id().equals(level_modified.getCourse().getCourse_id())) {
             Course course = course_repo.findById(level.getCurso_id())
-                    .orElseThrow(() -> new RuntimeException("Curso con ID " + level.getCurso_id() + " inexistente"));
+                    .orElseThrow(() -> new DuplicateResourceException("Curso con ID " + level.getCurso_id() + " inexistente"));
             level_modified.setCourse(course);
         }
 
@@ -98,10 +101,10 @@ public class LevelService implements ILevelService {
 
     @Override
     public void deactivateLevel(Long id) {
-        if (id == null) throw new RuntimeException("Por favor, especifique la ID");
+        if (id == null) throw new BadRequestException("Por favor, especifique la ID");
 
         Level level_deactivated = level_repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nivel con ID " + id + " inexistente"));
+                .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + id + " inexistente"));
 
         level_deactivated.setIs_active(!level_deactivated.getIs_active());
 
@@ -110,9 +113,9 @@ public class LevelService implements ILevelService {
 
     @Override
     public List<TopicResponse> getTopicsByLevel(Long level_id) {
-        if (level_id == null) throw new RuntimeException("Por favor, especifique la ID");
+        if (level_id == null) throw new BadRequestException("Por favor, especifique la ID");
 
-        if (!level_repo.existsById(level_id)) throw new RuntimeException("Nivel con ID " + level_id + " inexistente");
+        if (!level_repo.existsById(level_id)) throw new ResourceNotFoundException("Nivel con ID " + level_id + " inexistente");
 
         List<Topic> topics = topic_repo.findByLevelLevelIdOrderByTopicOrder(level_id);
 

@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.joacocenteno.yoAprendo_api.dto.CourseRequest;
 import com.joacocenteno.yoAprendo_api.dto.CourseResponse;
 import com.joacocenteno.yoAprendo_api.dto.LevelResponse;
+import com.joacocenteno.yoAprendo_api.exception.BadRequestException;
+import com.joacocenteno.yoAprendo_api.exception.DuplicateResourceException;
+import com.joacocenteno.yoAprendo_api.exception.ResourceNotFoundException;
 import com.joacocenteno.yoAprendo_api.mapper.Mapper;
 import com.joacocenteno.yoAprendo_api.model.Course;
 import com.joacocenteno.yoAprendo_api.model.Level;
@@ -30,17 +34,17 @@ public class CourseService implements ICourseService{
 
     @Override
     public CourseResponse getCourseById(Long course_id) {
-        if(course_id == null) throw new RuntimeException("ID Curso no puede ser nulo");
+        if(course_id == null) throw new BadRequestException("ID Curso no puede ser nulo");
 
-        Course course_obtained = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+        Course course_obtained = course_repo.findById(course_id).orElseThrow(() -> new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente"));
 
         return Mapper.toDto(course_obtained);
     }
 
     @Override
     public CourseResponse createCourse(CourseRequest course) {
-        if (course == null) throw new RuntimeException("Por favor, especifique los datos del curso");
-        if(course_repo.existCourseByName(course.getName())) throw new RuntimeException("Curso con nombre '"+ course.getName() + "' ya existente en la plataforma");
+        if (course == null) throw new BadRequestException("Por favor, especifique los datos del curso");
+        if(course_repo.existCourseByName(course.getName())) throw new DuplicateResourceException("Curso con nombre '"+ course.getName() + "' ya existente en la plataforma");
 
         Course course_created = Course.builder()
                                     .course_name(course.getName())
@@ -53,15 +57,15 @@ public class CourseService implements ICourseService{
 
     @Override
     public CourseResponse editCourse(Long course_id, CourseRequest course) {
-        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
-        if (course == null) throw new RuntimeException("Por favor, especifique los datos del curso");
+        if(course_id == null) throw new BadRequestException("Por favor, especifique la ID");
+        if (course == null) throw new BadRequestException("Por favor, especifique los datos del curso");
 
-        Course course_modified = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+        Course course_modified = course_repo.findById(course_id).orElseThrow(() -> new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente"));
 
         if(course.getName() != null && !course.getName().equals(course_modified.getCourse_name())){
 
                 if(course_repo.existCourseByName(course.getName())){
-                    throw new RuntimeException("Curso con nombre '"+ course.getName() + "' existente");
+                    throw new DuplicateResourceException("Curso con nombre '"+ course.getName() + "' existente");
                 }
 
                 course_modified.setCourse_name(course.getName());
@@ -74,9 +78,9 @@ public class CourseService implements ICourseService{
 
     @Override
     public void toggleActiveCourse(Long course_id) {
-        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
+        if(course_id == null) throw new BadRequestException("Por favor, especifique la ID");
         
-        Course course_deactivated = course_repo.findById(course_id).orElseThrow(() -> new RuntimeException("Curso con ID "+ course_id + " inexistente"));
+        Course course_deactivated = course_repo.findById(course_id).orElseThrow(() -> new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente"));
 
         course_deactivated.setIs_active(!course_deactivated.getIs_active());
 
@@ -85,9 +89,9 @@ public class CourseService implements ICourseService{
 
     @Override
     public List<LevelResponse> getLevelsByCourse(Long course_id) {
-        if(course_id == null) throw new RuntimeException("Por favor, especifique la ID");
+        if(course_id == null) throw new BadRequestException("Por favor, especifique la ID");
 
-        if(!course_repo.existsById(course_id)) throw new RuntimeException("Curso con ID "+ course_id + " inexistente");
+        if(!course_repo.existsById(course_id)) throw new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente");
 
         List<Level> levels = level_repo.findByCourseCourseIdOrderByLevelOrder(course_id);
 

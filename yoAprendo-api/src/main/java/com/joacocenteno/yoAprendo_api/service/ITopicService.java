@@ -11,6 +11,6 @@ public interface ITopicService {
     public TopicResponse getTopicById(Long topic_id);
     public TopicResponse createTopic(TopicRequest topic);
     public TopicResponse editTopic(Long topic_id, TopicRequest topic);
-    public void deactivateTopic(Long id);
+    public void deactivateTopic(Long topic_id);
     public List<LessonResponse> getLessonsByTopic(Long topic_id);
 }

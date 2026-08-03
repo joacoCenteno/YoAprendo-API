@@ -10,4 +10,6 @@ import com.joacocenteno.yoAprendo_api.model.Lesson;
 @Repository
 public interface ILessonRepository extends JpaRepository<Lesson, Long>{
     List<Lesson> findByTopicTopicIDOrderByLessosOrder(Long id_topic);
+
+    Boolean existsByTopicTopicIdAndLessonTitle(Long topic_id, String lesson_title);
 }

@@ -55,15 +55,15 @@ public class TopicService implements ITopicService{
                                 .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID "+ topic.getLevel_id() + " inexistente"));
         
 
-        if(topic.getName() != null && topic_repo.existsByLevelLevelIdAndTopicName(level.getLevel_id(), topic.getName())){
-            throw new DuplicateResourceException("Tema '"+topic.getName()+"' ya existente dentro del Nivel '"+level.getLevel_name()+"'");
+        if(topic.getName() != null && topic_repo.existsByLevelLevelIdAndTopicName(level.getLevelId(), topic.getName())){
+            throw new DuplicateResourceException("Tema '"+topic.getName()+"' ya existente dentro del Nivel '"+level.getLevelName()+"'");
         }
 
         Topic topic_created = Topic.builder()
-                                    .topic_name(topic.getName())
-                                    .topic_description(topic.getDescription())
-                                    .topic_order(topic.getOrder())
-                                    .is_active(topic.getIs_active() != null ? topic.getIs_active() : true)
+                                    .topicName(topic.getName())
+                                    .topicDescription(topic.getDescription())
+                                    .topicOrder(topic.getOrder())
+                                    .isActive(topic.getIs_active() != null ? topic.getIs_active() : true)
                                     .build();
         
         return Mapper.toDto(topic_repo.save(topic_created));
@@ -77,21 +77,21 @@ public class TopicService implements ITopicService{
         Topic topic_modified = topic_repo.findById(topic_id)
                                             .orElseThrow(() -> new ResourceNotFoundException("Tema con ID "+topic_id+" inexistente"));
 
-        Long level_id_to_check = topic.getLevel_id() != null ? topic.getLevel_id() : topic_modified.getLevel().getLevel_id();
+        Long level_id_to_check = topic.getLevel_id() != null ? topic.getLevel_id() : topic_modified.getLevel().getLevelId();
 
-        if(topic.getName() != null && !topic.getName().equals(topic_modified.getTopic_name())){
+        if(topic.getName() != null && !topic.getName().equals(topic_modified.getTopicName())){
             if(topic_repo.existsByLevelLevelIdAndTopicName(level_id_to_check, topic.getName())){
                 throw new DuplicateResourceException("Tema '"+topic.getName()+"' ya existente dentro del Nivel");
             }
 
-            topic_modified.setTopic_name(topic.getName());
+            topic_modified.setTopicName(topic.getName());
         }
 
-        if(topic.getDescription() != null) topic_modified.setTopic_description(topic.getDescription());
-        if(topic.getOrder() != null) topic_modified.setTopic_order(topic.getOrder());
-        if(topic.getIs_active() != null) topic_modified.setIs_active(topic.getIs_active());
+        if(topic.getDescription() != null) topic_modified.setTopicDescription(topic.getDescription());
+        if(topic.getOrder() != null) topic_modified.setTopicOrder(topic.getOrder());
+        if(topic.getIs_active() != null) topic_modified.setIsActive(topic.getIs_active());
 
-        if(topic.getLevel_id() != null && !topic.getLevel_id().equals(topic_modified.getLevel().getLevel_id())){
+        if(topic.getLevel_id() != null && !topic.getLevel_id().equals(topic_modified.getLevel().getLevelId())){
             Level level = level_repo.findById(topic.getLevel_id())
                                     .orElseThrow(() -> new DuplicateResourceException("Nivel con ID "+ topic.getLevel_id() +" inexistente"));
             
@@ -102,13 +102,13 @@ public class TopicService implements ITopicService{
     }
 
     @Override
-    public void deactivateTopic(Long topic_id) {
+    public void toggleActiveTopic(Long topic_id) {
         if (topic_id == null) throw new BadRequestException("Por favor, especifique la ID");
 
         Topic topic_deactivated = topic_repo.findById(topic_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tema con ID " + topic_id + " inexistente"));
 
-        topic_deactivated.setIs_active(!topic_deactivated.getIs_active());
+        topic_deactivated.setIsActive(!topic_deactivated.getIsActive());
 
         topic_repo.save(topic_deactivated);
     }
@@ -119,7 +119,7 @@ public class TopicService implements ITopicService{
 
         if (!topic_repo.existsById(topic_id)) throw new ResourceNotFoundException("Tema con ID " + topic_id + " inexistente");
 
-        List<Lesson> lessons = lesson_repo.findByTopicTopicIDOrderByLessosOrder(topic_id);
+        List<Lesson> lessons = lesson_repo.findByTopicTopicIdOrderByLessonOrder(topic_id);
 
         return lessons.stream().map(Mapper::toDto).toList();
     }

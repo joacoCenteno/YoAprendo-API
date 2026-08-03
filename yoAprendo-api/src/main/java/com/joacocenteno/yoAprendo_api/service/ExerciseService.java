@@ -26,11 +26,21 @@ public class ExerciseService implements IExerciseService{
 
         if (exercise.getJson_content() == null || exercise.getJson_content().isBlank()) throw new BadRequestException("El contenido JSON no puede estar vacío");
 
-        if (exercise.getJson_content().equals(exercise_modified.getJson_content())) throw new BadRequestException("El contenido JSON es igual al existente");
+        if (exercise.getJson_content().equals(exercise_modified.getJsonContent())) throw new BadRequestException("El contenido JSON es igual al existente");
 
 
-        exercise_modified.setJson_content(exercise.getJson_content());
+        exercise_modified.setJsonContent(exercise.getJson_content());
 
         return Mapper.toDto(exercise_repo.save(exercise_modified));
+    }
+
+    @Override
+    public ExerciseResponse getExerciseById(Long exercise_id) {
+        if(exercise_id == null) throw new BadRequestException("ID Tema no puede ser nulo");
+
+        Exercise exercise = exercise_repo.findById(exercise_id)
+                                        .orElseThrow(() -> new ResourceNotFoundException("Ejercicio con ID "+exercise_id+" inexistente"));
+
+        return Mapper.toDto(exercise);
     }
 }

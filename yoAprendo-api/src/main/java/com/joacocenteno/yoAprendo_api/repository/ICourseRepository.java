@@ -10,9 +10,9 @@ import com.joacocenteno.yoAprendo_api.model.Course;
 @Repository
 public interface ICourseRepository extends JpaRepository<Course, Long>{
     @Query("""
-            SELECT COUNT(c) > 0 
-            FROM Course c
-            WHERE c.course_name = : course_name
-            """)
-    public Boolean existCourseByName(@Param("course_name") String course_name);
+        SELECT COUNT(c) > 0
+        FROM Course c
+        WHERE c.courseName = :courseName
+    """)
+    public Boolean existCourseByName(@Param("courseName") String courseName);
 }

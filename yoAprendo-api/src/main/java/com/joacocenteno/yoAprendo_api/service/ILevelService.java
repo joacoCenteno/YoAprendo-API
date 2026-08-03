@@ -11,6 +11,6 @@ public interface ILevelService {
     public LevelResponse getLevelById(Long level_id);
     public LevelResponse createLevel(LevelRequest level);
     public LevelResponse editLevel(Long id, LevelRequest level);
-    public void deactivateLevel(Long id);
+    public void toggleActiveLevel(Long id);
     public List<TopicResponse> getTopicsByLevel(Long level_id);
 }

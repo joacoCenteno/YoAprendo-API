@@ -59,10 +59,10 @@ public class LevelService implements ILevelService {
         }
 
         Level level_created = Level.builder()
-                .level_name(level.getName())
-                .level_description(level.getDescription())
-                .level_order(level.getOrder())
-                .is_active(level.getIs_active() != null ? level.getIs_active() : true)
+                .levelName(level.getName())
+                .levelDescription(level.getDescription())
+                .levelOrder(level.getOrder())
+                .isActive(level.getIs_active() != null ? level.getIs_active() : true)
                 .course(course)
                 .build();
 
@@ -77,20 +77,20 @@ public class LevelService implements ILevelService {
         Level level_modified = level_repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + id + " inexistente"));
 
-        Long course_id_to_check = level.getCurso_id() != null ? level.getCurso_id() : level_modified.getCourse().getCourse_id();
+        Long course_id_to_check = level.getCurso_id() != null ? level.getCurso_id() : level_modified.getCourse().getCourseId();
 
-        if (level.getName() != null && !level.getName().equals(level_modified.getLevel_name())) {
+        if (level.getName() != null && !level.getName().equals(level_modified.getLevelName())) {
             if (level_repo.existsByCourseCourseIdAndLevelName(course_id_to_check, level.getName())) {
                 throw new DuplicateResourceException("Nivel con nombre '" + level.getName() + "' ya existente en el curso");
             }
-            level_modified.setLevel_name(level.getName());
+            level_modified.setLevelName(level.getName());
         }
 
-        if (level.getDescription() != null) level_modified.setLevel_description(level.getDescription());
-        if (level.getOrder() != null) level_modified.setLevel_order(level.getOrder());
-        if (level.getIs_active() != null) level_modified.setIs_active(level.getIs_active());
+        if (level.getDescription() != null) level_modified.setLevelDescription(level.getDescription());
+        if (level.getOrder() != null) level_modified.setLevelOrder(level.getOrder());
+        if (level.getIs_active() != null) level_modified.setIsActive(level.getIs_active());
 
-        if (level.getCurso_id() != null && !level.getCurso_id().equals(level_modified.getCourse().getCourse_id())) {
+        if (level.getCurso_id() != null && !level.getCurso_id().equals(level_modified.getCourse().getCourseId())) {
             Course course = course_repo.findById(level.getCurso_id())
                     .orElseThrow(() -> new DuplicateResourceException("Curso con ID " + level.getCurso_id() + " inexistente"));
             level_modified.setCourse(course);
@@ -100,13 +100,13 @@ public class LevelService implements ILevelService {
     }
 
     @Override
-    public void deactivateLevel(Long id) {
+    public void toggleActiveLevel(Long id) {
         if (id == null) throw new BadRequestException("Por favor, especifique la ID");
 
         Level level_deactivated = level_repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + id + " inexistente"));
 
-        level_deactivated.setIs_active(!level_deactivated.getIs_active());
+        level_deactivated.setIsActive(!level_deactivated.getIsActive());
 
         level_repo.save(level_deactivated);
     }

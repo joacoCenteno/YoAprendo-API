@@ -25,9 +25,9 @@ public class Mapper {
         if(cecoe == null) return null;
 
         return CecoeResponse.builder()
-                        .id(cecoe.getCecoe_id())
-                        .name(cecoe.getCecoe_name())
-                        .is_active(cecoe.getIs_active())
+                        .id(cecoe.getCecoeId())
+                        .name(cecoe.getCecoeName())
+                        .is_active(cecoe.getIsActive())
                         .build();
     }
 
@@ -35,9 +35,9 @@ public class Mapper {
         if(course == null) return null;
 
         return CourseResponse.builder()
-                        .id(course.getCourse_id())
-                        .name(course.getCourse_name())
-                        .description(course.getCourse_description())
+                        .id(course.getCourseId())
+                        .name(course.getCourseName())
+                        .description(course.getCourseDescription())
                         .build();
     }
 
@@ -45,9 +45,9 @@ public class Mapper {
         if(exer_prog == null) return null;
 
         return ExerciseProgressResponse.builder()
-                                    .id(exer_prog.getExercise_progress_id())
+                                    .id(exer_prog.getExerciseProgresId())
                                     .user_id(exer_prog.getUser().getId())
-                                    .exercise_id(exer_prog.getExercise().getExercise_id())
+                                    .exercise_id(exer_prog.getExercise().getExerciseId())
                                     .attempts(exer_prog.getAttempts())
                                     .is_completed(exer_prog.getCompleted())
                                     .build();
@@ -57,9 +57,9 @@ public class Mapper {
         if(exercise == null) return null;
 
         return ExerciseResponse.builder()
-                            .id(exercise.getExercise_id())
-                            .type(exercise.getExercise_type())
-                            .json_content(exercise.getJson_content())
+                            .id(exercise.getExerciseId())
+                            .type(exercise.getExerciseType())
+                            .json_content(exercise.getJsonContent())
                             .build();
     }
 
@@ -67,11 +67,11 @@ public class Mapper {
         if(lesson == null) return null;
 
         return LessonResponse.builder()
-                            .id(lesson.getLesson_id())
-                            .title(lesson.getLesson_title())
-                            .description(lesson.getLesson_description())
-                            .order(lesson.getLesson_order())
-                            .topic_id(lesson.getTopic().getTopic_id())
+                            .id(lesson.getLessonId())
+                            .title(lesson.getLessonTitle())
+                            .description(lesson.getLessonDescription())
+                            .order(lesson.getLessonOrder())
+                            .topic_id(lesson.getTopic().getTopicId())
                             .build();
     }
 
@@ -79,11 +79,11 @@ public class Mapper {
         if(level == null) return null;
 
         return LevelResponse.builder()
-                            .id(level.getLevel_id())
-                            .name(level.getLevel_name())
-                            .description(level.getLevel_description())
-                            .order(level.getLevel_order())
-                            .course_id(level.getCourse().getCourse_id())
+                            .id(level.getLevelId())
+                            .name(level.getLevelName())
+                            .description(level.getLevelDescription())
+                            .order(level.getLevelOrder())
+                            .course_id(level.getCourse().getCourseId())
                             .build();
     }
 
@@ -91,11 +91,11 @@ public class Mapper {
         if(progress == null) return null;
 
         return ProgressResponse.builder()
-                            .id(progress.getProgress_id())
+                            .id(progress.getProgressId())
                             .user_id(progress.getUser().getId())
-                            .lesson_id(progress.getLesson().getLesson_id())
-                            .status(progress.getProgress_status())
-                            .percent(progress.getProgress_percent().intValue())
+                            .lesson_id(progress.getLesson().getLessonId())
+                            .status(progress.getProgressStatus())
+                            .percent(progress.getProgressPercent().intValue())
                             .build();
     }
 
@@ -103,11 +103,11 @@ public class Mapper {
         if(topic == null) return null;
 
         return TopicResponse.builder()
-                            .id(topic.getTopic_id())
-                            .nombre(topic.getTopic_name())
-                            .description(topic.getTopic_description())
-                            .order(topic.getTopic_order())
-                            .level_id(topic.getLevel().getLevel_id())
+                            .id(topic.getTopicId())
+                            .nombre(topic.getTopicName())
+                            .description(topic.getTopicDescription())
+                            .order(topic.getTopicOrder())
+                            .level_id(topic.getLevel().getLevelId())
                             .build();
     }
 
@@ -116,11 +116,11 @@ public class Mapper {
 
         return UserResponse.builder()
                             .id(user.getId())
-                            .name(user.getUser_name())
-                            .surname(user.getUser_surname())
-                            .rol(user.getUser_rol())
-                            .is_active(user.getUser_active())
-                            .cecoe_id(user.getCecoe().getCecoe_id())
+                            .name(user.getUserName())
+                            .surname(user.getUserSurname())
+                            .rol(user.getUserRol())
+                            .is_active(user.getUserActive())
+                            .cecoe_id(user.getCecoe().getCecoeId())
                             .build();
     }
 }

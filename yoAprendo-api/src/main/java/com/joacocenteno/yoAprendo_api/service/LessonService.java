@@ -57,14 +57,14 @@ public class LessonService implements ILessonService{
         
 
         if(lesson.getTitle() != null && lesson_repo.existsByTopicTopicIdAndLessonTitle(lesson.getTopic_id(), lesson.getTitle())){
-            throw new DuplicateResourceException("Lección '"+lesson.getTitle()+"' ya existente dentro del Tema '"+topic.getTopic_name()+"'");
+            throw new DuplicateResourceException("Lección '"+lesson.getTitle()+"' ya existente dentro del Tema '"+topic.getTopicName()+"'");
         }
 
         Lesson lesson_created = Lesson.builder()
-                                    .lesson_title(lesson.getTitle())
-                                    .lesson_description(lesson.getDescription())
-                                    .lesson_order(lesson.getOrder())
-                                    .is_active(lesson.getIs_active() != null ? lesson.getIs_active() : true)
+                                    .lessonTitle(lesson.getTitle())
+                                    .lessonDescription(lesson.getDescription())
+                                    .lessonOrder(lesson.getOrder())
+                                    .isactive(lesson.getIs_active() != null ? lesson.getIs_active() : true)
                                     .topic(topic)
                                     .build();
 
@@ -79,7 +79,7 @@ public class LessonService implements ILessonService{
     private void createDefaultExercises(Lesson lesson) {
         for (ExerciseType type : ExerciseType.values()) {
             Exercise exercise = Exercise.builder()
-                    .exercise_type(type)
+                    .exerciseType(type)
                     .lesson(lesson)
                     .build();
 
@@ -95,21 +95,21 @@ public class LessonService implements ILessonService{
         Lesson lesson_modified = lesson_repo.findById(lesson_id)
                                             .orElseThrow(() -> new ResourceNotFoundException("Lección con ID "+lesson_id+" inexistente"));
 
-        Long topic_id_to_check = lesson.getTopic_id() != null ? lesson.getTopic_id() : lesson_modified.getTopic().getTopic_id();
+        Long topic_id_to_check = lesson.getTopic_id() != null ? lesson.getTopic_id() : lesson_modified.getTopic().getTopicId();
 
-        if(lesson.getTitle() != null && !lesson.getTitle().equals(lesson_modified.getLesson_title())){
+        if(lesson.getTitle() != null && !lesson.getTitle().equals(lesson_modified.getLessonTitle())){
             if(lesson_repo.existsByTopicTopicIdAndLessonTitle(topic_id_to_check, lesson.getTitle())){
                 throw new DuplicateResourceException("Lección '"+lesson.getTitle()+"' ya existente dentro del Tema");
             }
 
-            lesson_modified.setLesson_title(lesson.getTitle());
+            lesson_modified.setLessonTitle(lesson.getTitle());
         }
 
-        if(lesson.getDescription() != null) lesson_modified.setLesson_description(lesson.getDescription());
-        if(lesson.getOrder() != null) lesson_modified.setLesson_order(lesson.getOrder());
-        if(lesson.getIs_active() != null) lesson_modified.setIs_active(lesson.getIs_active());
+        if(lesson.getDescription() != null) lesson_modified.setLessonDescription(lesson.getDescription());
+        if(lesson.getOrder() != null) lesson_modified.setLessonOrder(lesson.getOrder());
+        if(lesson.getIs_active() != null) lesson_modified.setIsactive(lesson.getIs_active());
 
-        if(lesson.getTopic_id() != null && !lesson.getTopic_id().equals(lesson_modified.getTopic().getTopic_id())){
+        if(lesson.getTopic_id() != null && !lesson.getTopic_id().equals(lesson_modified.getTopic().getTopicId())){
             Topic topic = topic_repo.findById(lesson.getTopic_id())
                                     .orElseThrow(() -> new ResourceNotFoundException("Tema con ID "+ lesson.getTopic_id() +" inexistente"));
             
@@ -120,13 +120,13 @@ public class LessonService implements ILessonService{
     }
 
     @Override
-    public void deactivateLesson(Long lesson_id) {
+    public void toggleActiveLesson(Long lesson_id) {
         if (lesson_id == null) throw new BadRequestException("Por favor, especifique la ID");
 
         Lesson lesson_deactivated = lesson_repo.findById(lesson_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nivel con ID " + lesson_id + " inexistente"));
 
-        lesson_deactivated.setIs_active(!lesson_deactivated.getIs_active());
+        lesson_deactivated.setIsactive(!lesson_deactivated.getIsactive());
 
         lesson_repo.save(lesson_deactivated);
     }

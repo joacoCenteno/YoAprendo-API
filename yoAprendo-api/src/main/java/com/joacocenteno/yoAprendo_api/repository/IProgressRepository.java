@@ -10,7 +10,7 @@ import com.joacocenteno.yoAprendo_api.model.Progress;
 
 @Repository
 public interface IProgressRepository extends JpaRepository<Progress, Long>{
-    Optional<Progress> findByUserUserIdAndLessonLessonId(Long id_user, Long id_lesson);
+    Optional<Progress> findByUserIdAndLessonLessonId(Long id_user, Long id_lesson);
 
-    List<Progress> findByUserUserId(Long id_user);
+    List<Progress> findByUserId(Long id_user);
 }

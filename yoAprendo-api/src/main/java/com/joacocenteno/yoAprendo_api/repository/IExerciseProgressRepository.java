@@ -10,7 +10,7 @@ import com.joacocenteno.yoAprendo_api.model.ExerciseProgress;
 
 @Repository
 public interface IExerciseProgressRepository extends JpaRepository<ExerciseProgress, Long>{
-    Optional<ExerciseProgress> findByUserUserIdAndExerciseExerciseId(Long id_user, Long exercise_id);
+    Optional<ExerciseProgress> findByUserIdAndExerciseExerciseId(Long id_user, Long exercise_id);
 
-    List<ExerciseProgress> findByUserUserId(Long id_user);
+    List<ExerciseProgress> findByUserId(Long id_user);
 }

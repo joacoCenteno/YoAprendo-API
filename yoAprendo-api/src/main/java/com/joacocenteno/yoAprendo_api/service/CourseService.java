@@ -47,8 +47,8 @@ public class CourseService implements ICourseService{
         if(course_repo.existCourseByName(course.getName())) throw new DuplicateResourceException("Curso con nombre '"+ course.getName() + "' ya existente en la plataforma");
 
         Course course_created = Course.builder()
-                                    .course_name(course.getName())
-                                    .course_description(course.getDescription())
+                                    .courseName(course.getName())
+                                    .courseDescription(course.getDescription())
                                     .build();
         
 
@@ -62,16 +62,16 @@ public class CourseService implements ICourseService{
 
         Course course_modified = course_repo.findById(course_id).orElseThrow(() -> new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente"));
 
-        if(course.getName() != null && !course.getName().equals(course_modified.getCourse_name())){
+        if(course.getName() != null && !course.getName().equals(course_modified.getCourseName())){
 
                 if(course_repo.existCourseByName(course.getName())){
                     throw new DuplicateResourceException("Curso con nombre '"+ course.getName() + "' existente");
                 }
 
-                course_modified.setCourse_name(course.getName());
+                course_modified.setCourseName(course.getName());
         }
-        if(course.getDescription() != null) course_modified.setCourse_description(course.getDescription());
-        if(course.getIs_active() != null) course_modified.setIs_active(course.getIs_active());
+        if(course.getDescription() != null) course_modified.setCourseDescription(course.getDescription());
+        if(course.getIs_active() != null) course_modified.setIsActive(course.getIs_active());
 
         return Mapper.toDto(course_repo.save(course_modified));
     }
@@ -82,7 +82,7 @@ public class CourseService implements ICourseService{
         
         Course course_deactivated = course_repo.findById(course_id).orElseThrow(() -> new ResourceNotFoundException("Curso con ID "+ course_id + " inexistente"));
 
-        course_deactivated.setIs_active(!course_deactivated.getIs_active());
+        course_deactivated.setIsActive(!course_deactivated.getIsActive());
 
         course_repo.save(course_deactivated);
     }

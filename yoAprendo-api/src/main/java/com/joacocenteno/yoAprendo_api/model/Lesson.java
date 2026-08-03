@@ -25,20 +25,21 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lesson_id;
+    @Column(name = "lesson_id")
+    private Long lessonId;
 
-    @Column(nullable = false, length = 150)
-    private String lesson_title;
+    @Column(name = "lesson_title", nullable = false, length = 150)
+    private String lessonTitle;
 
-    @Column(length = 500)
-    private String lesson_description;
+    @Column(name = "lesson_description", length = 500)
+    private String lessonDescription;
 
-    @Column(nullable = false)
-    private Integer lesson_order;
+    @Column(name = "lesson_order", nullable = false)
+    private Integer lessonOrder;
 
     @Builder.Default
-    @Column(nullable  = false)
-    private Boolean is_active = true;
+    @Column(name = "is_active", nullable  = false)
+    private Boolean isactive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)

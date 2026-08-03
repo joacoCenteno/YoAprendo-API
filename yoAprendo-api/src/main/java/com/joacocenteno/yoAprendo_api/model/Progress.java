@@ -2,6 +2,7 @@ package com.joacocenteno.yoAprendo_api.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,7 +26,8 @@ public class Progress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long progress_id;
+    @Column(name = "progress_id")
+    private Long progressId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -36,9 +38,12 @@ public class Progress {
     private Lesson lesson;
 
     @Enumerated(EnumType.STRING)
-    private PorgressStatus progress_status;
+    @Column(name = "progress_status")
+    private PorgressStatus progressStatus;
 
-    private Double progress_percent;
+    @Column(name = "progress_percent")
+    private Double progressPercent;
 
-    private LocalDateTime last_access_date;
+    @Column(name = "last_access_date")
+    private LocalDateTime lastAccessDate;
 }

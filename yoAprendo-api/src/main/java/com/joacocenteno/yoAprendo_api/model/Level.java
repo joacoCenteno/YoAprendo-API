@@ -22,20 +22,21 @@ public class Level {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long level_id;
+    @Column(name = "level_id")
+    private Long levelId;
 
-    @Column(nullable = false, length = 100)
-    private String level_name;
+    @Column(name = "level_name", nullable = false, length = 100)
+    private String levelName;
 
-    @Column(length = 500)
-    private String level_description;
+    @Column(name = "level_description", length = 500)
+    private String levelDescription;
 
-    @Column(nullable = false)
-    private Integer level_order;
+    @Column(name = "level_order", nullable = false)
+    private Integer levelOrder;
 
     @Builder.Default
-    @Column(nullable  = false)
-    private Boolean is_active = true;
+    @Column(name = "is_active", nullable  = false)
+    private Boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable =  false)

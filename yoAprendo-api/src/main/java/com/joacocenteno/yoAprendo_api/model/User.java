@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,27 +20,32 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String user_name;
+    @Column(name = "user_name", nullable = false, length = 100)
+    private String userName;
 
-    @Column(nullable = false, length = 100)
-    private String user_surname;
+    @Column(name = "user_surname", nullable = false, length = 100)
+    private String userSurname;
 
-    @Column(nullable = false)
+    @Column(name = "user_password", nullable = false)
     private String password;
 
+    @Column(name = "user_email", nullable = false)
+    private String email;
+
     @Enumerated(EnumType.STRING)
-    private UserRol user_rol;
+    private UserRol userRol;
 
     @Builder.Default
     @Column(nullable = false)
-    private Boolean user_active = true;
+    private Boolean userActive = true;
 
     @ManyToOne
     @JoinColumn(name = "cecoe_id")

@@ -24,7 +24,8 @@ public class ExerciseProgress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exercise_progress_id;
+    @Column(name = "exercise_progress_id")
+    private Long exerciseProgresId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -40,6 +41,7 @@ public class ExerciseProgress {
     @Column(nullable = false)
     private Boolean completed;
 
-    private LocalDateTime last_access_date;
+    @Column(name = "last_access_date")
+    private LocalDateTime lastAcessDate;
 
 }

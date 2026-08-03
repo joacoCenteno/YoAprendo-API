@@ -19,12 +19,13 @@ public class Cecoe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cecoe_id;
+    @Column(name = "cecoe_id")
+    private Long cecoeId;
 
-    @Column(nullable = false, length = 150)
-    private String cecoe_name;
+    @Column(name = "cecoe_name", nullable = false, length = 150)
+    private String cecoeName;
 
     @Builder.Default
-    @Column(nullable  = false)
-    private Boolean is_active = true;
+    @Column(name ="is_active", nullable  = false)
+    private Boolean isActive = true;
 }

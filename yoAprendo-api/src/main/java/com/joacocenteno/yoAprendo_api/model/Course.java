@@ -20,15 +20,16 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long course_id;
+    @Column(name = "course_id")
+    private Long courseId;
 
-    @Column(nullable = false, length = 100)
-    private String course_name;
+    @Column(name = "course_name", nullable = false, length = 100)
+    private String courseName;
 
-    @Column(length = 500)
-    private String course_description;
+    @Column(name = "course_description", length = 500)
+    private String courseDescription;
 
     @Builder.Default
-    @Column(nullable  = false)
-    private Boolean is_active = true;
+    @Column(name = "is_active", nullable  = false)
+    private Boolean isActive = true;
 }

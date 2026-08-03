@@ -22,20 +22,21 @@ public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long topic_id;
+    @Column(name = "topic_id")
+    private Long topicId;
 
-    @Column(nullable = false, length = 100)
-    private String topic_name;
+    @Column(name = "topic_name", nullable = false, length = 100)
+    private String topicName;
 
-    @Column(length = 500)
-    private String topic_description;
+    @Column(name = "topic_description", length = 500)
+    private String topicDescription;
 
-    @Column(nullable = false)
-    private Integer topic_order;
+    @Column(name = "topic_order", nullable = false)
+    private Integer topicOrder;
 
     @Builder.Default
-    @Column(nullable  = false)
-    private Boolean is_active = true;
+    @Column(name = "is_active", nullable  = false)
+    private Boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_id", nullable = false)

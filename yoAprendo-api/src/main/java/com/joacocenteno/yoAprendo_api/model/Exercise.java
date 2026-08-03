@@ -24,14 +24,15 @@ public class Exercise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exercise_id;
+    @Column(name = "exercise_id")
+    private Long exerciseId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ExerciseType exercise_type;
+    @Column(name = "exercise_type", nullable = false)
+    private ExerciseType exerciseType;
 
-    @Column(columnDefinition = "TEXT")
-    private String json_content;
+    @Column(name = "json_content", columnDefinition = "TEXT")
+    private String jsonContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id", nullable = false)

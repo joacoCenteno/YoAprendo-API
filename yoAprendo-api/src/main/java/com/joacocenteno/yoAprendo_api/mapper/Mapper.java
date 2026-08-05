@@ -95,7 +95,7 @@ public class Mapper {
                             .user_id(progress.getUser().getId())
                             .lesson_id(progress.getLesson().getLessonId())
                             .status(progress.getProgressStatus())
-                            .percent(progress.getProgressPercent().intValue())
+                            .percent(progress.getProgressPercent())
                             .build();
     }
 
@@ -120,7 +120,7 @@ public class Mapper {
                             .surname(user.getUserSurname())
                             .rol(user.getUserRol())
                             .is_active(user.getUserActive())
-                            .cecoe_id(user.getCecoe().getCecoeId())
+                            .cecoe_id(user.getCecoe() != null ? user.getCecoe().getCecoeId() : null)
                             .build();
     }
 }

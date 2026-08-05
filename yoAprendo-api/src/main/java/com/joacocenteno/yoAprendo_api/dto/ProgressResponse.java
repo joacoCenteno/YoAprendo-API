@@ -10,5 +10,5 @@ public class ProgressResponse {
     Long user_id;
     Long lesson_id;
     PorgressStatus status;
-    Integer percent;
+    Double percent;
 }

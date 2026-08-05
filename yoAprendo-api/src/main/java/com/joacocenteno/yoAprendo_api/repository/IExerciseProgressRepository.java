@@ -13,4 +13,7 @@ public interface IExerciseProgressRepository extends JpaRepository<ExerciseProgr
     Optional<ExerciseProgress> findByUserIdAndExerciseExerciseId(Long id_user, Long exercise_id);
 
     List<ExerciseProgress> findByUserId(Long id_user);
+
+    Long countByUserIdAndExerciseLessonLessonIdAndCompletedTrue(Long user_id, Long lesson_id);
+
 }

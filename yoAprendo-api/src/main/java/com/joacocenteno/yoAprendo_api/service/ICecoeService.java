@@ -12,6 +12,7 @@ public interface ICecoeService {
     public CecoeResponse getCecoeById(Long cecoe_id);
     public CecoeResponse createCecoe(CecoeRequest cecoe);
     public CecoeResponse editCecoe(Long cecoe_id, CecoeRequest cecoe);
-    public void deactivateCecoe(Long cecoe_id);
-    public List<UserResponse> getStudentsByCecoe(Long cecoe_id, UserRol rol);
+    public void toggleActiveCecoe(Long cecoe_id);
+    public List<UserResponse> getUsersByCecoe(Long cecoeId);
+    public List<UserResponse> getUsersByCecoeAndRole(Long cecoeId, UserRol role);
 }

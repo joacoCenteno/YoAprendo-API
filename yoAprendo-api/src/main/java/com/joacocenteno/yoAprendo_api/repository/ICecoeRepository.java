@@ -7,5 +7,5 @@ import com.joacocenteno.yoAprendo_api.model.Cecoe;
 
 @Repository
 public interface ICecoeRepository extends JpaRepository<Cecoe, Long>{
-
+    Boolean existsByCecoeName(String cecoeName);
 }

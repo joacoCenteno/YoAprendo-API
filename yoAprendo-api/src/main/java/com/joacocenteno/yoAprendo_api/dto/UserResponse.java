@@ -3,7 +3,9 @@ package com.joacocenteno.yoAprendo_api.dto;
 import com.joacocenteno.yoAprendo_api.model.UserRol;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class UserResponse {
     Long id;

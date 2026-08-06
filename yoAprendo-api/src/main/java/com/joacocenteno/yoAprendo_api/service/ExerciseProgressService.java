@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.joacocenteno.yoAprendo_api.dto.ExerciseProgressRequest;
 import com.joacocenteno.yoAprendo_api.dto.ExerciseProgressResponse;
-import com.joacocenteno.yoAprendo_api.exception.BadRequestException;
 import com.joacocenteno.yoAprendo_api.exception.ResourceNotFoundException;
 import com.joacocenteno.yoAprendo_api.mapper.Mapper;
 import com.joacocenteno.yoAprendo_api.model.Exercise;
@@ -19,7 +18,7 @@ import com.joacocenteno.yoAprendo_api.repository.IUserRepository;
 
 
 @Service
-public class ExerciseProgressService implements IExerciseProgress{
+public class ExerciseProgressService implements IExerciseProgressService{
 
     @Autowired
     IExerciseProgressRepository exercise_progress_repo;

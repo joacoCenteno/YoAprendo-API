@@ -63,6 +63,7 @@ public class TopicService implements ITopicService{
                                     .topicName(topic.getName())
                                     .topicDescription(topic.getDescription())
                                     .topicOrder(topic.getOrder())
+                                    .level(level)
                                     .isActive(topic.getIs_active() != null ? topic.getIs_active() : true)
                                     .build();
         

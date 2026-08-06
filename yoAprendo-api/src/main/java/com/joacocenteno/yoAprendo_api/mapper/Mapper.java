@@ -60,6 +60,7 @@ public class Mapper {
                             .id(exercise.getExerciseId())
                             .type(exercise.getExerciseType())
                             .json_content(exercise.getJsonContent())
+                            .id_lesson(exercise.getLesson().getLessonId())
                             .build();
     }
 

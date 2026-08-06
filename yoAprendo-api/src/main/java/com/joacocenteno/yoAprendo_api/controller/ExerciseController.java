@@ -15,7 +15,7 @@ import com.joacocenteno.yoAprendo_api.service.IExerciseService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 
 @RestController
@@ -27,12 +27,12 @@ public class ExerciseController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponse> getExerciseById(@RequestParam Long id) {
+    public ResponseEntity<ExerciseResponse> getExerciseById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(exercise_serv.getExerciseById(id));
     }
     
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ExerciseResponse> editExerciseController(@PathVariable Long id, @Valid @RequestBody UpdateExerciseRequest exercise_request) {
 
         ExerciseResponse exercise_edited = exercise_serv.editExercise(id, exercise_request);

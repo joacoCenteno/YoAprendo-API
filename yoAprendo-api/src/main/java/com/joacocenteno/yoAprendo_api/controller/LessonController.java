@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joacocenteno.yoAprendo_api.dto.ExerciseResponse;
@@ -35,7 +34,7 @@ public class LessonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LessonResponse> getLessonByIdController(@RequestParam Long id) {
+    public ResponseEntity<LessonResponse> getLessonByIdController(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(lesson_serv.getLessonById(id));
     }
 
@@ -61,7 +60,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{id}/levels")
+    @GetMapping("/{id}/exercises")
     public ResponseEntity<List<ExerciseResponse>> getExercisesByLessonController(@PathVariable Long id) {
 
         return ResponseEntity.status(HttpStatus.OK).body(lesson_serv.getExercisesByLesson(id));

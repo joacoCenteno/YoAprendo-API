@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joacocenteno.yoAprendo_api.dto.LessonResponse;
@@ -35,7 +34,7 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TopicResponse> getTopicByIdController(@RequestParam Long id) {
+    public ResponseEntity<TopicResponse> getTopicByIdController(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(topic_serv.getTopicById(id));
     }
 

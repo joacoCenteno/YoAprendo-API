@@ -38,7 +38,7 @@ public class CecoeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CecoeResponse> getCecoeByIdController(@RequestParam Long id) {
+    public ResponseEntity<CecoeResponse> getCecoeByIdController(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(cecoe_serv.getCecoeById(id));
     }
 

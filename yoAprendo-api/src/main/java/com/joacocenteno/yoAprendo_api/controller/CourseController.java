@@ -17,7 +17,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,7 +37,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getCourseByIdController(@RequestParam Long id) {
+    public ResponseEntity<CourseResponse> getCourseByIdController(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(course_serv.getCourseById(id));
     }
 

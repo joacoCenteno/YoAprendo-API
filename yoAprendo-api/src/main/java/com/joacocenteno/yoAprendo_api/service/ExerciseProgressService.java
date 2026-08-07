@@ -15,6 +15,7 @@ import com.joacocenteno.yoAprendo_api.model.User;
 import com.joacocenteno.yoAprendo_api.repository.IExerciseProgressRepository;
 import com.joacocenteno.yoAprendo_api.repository.IExerciseRepository;
 import com.joacocenteno.yoAprendo_api.repository.IUserRepository;
+import com.joacocenteno.yoAprendo_api.service.validation.ExerciseValidator;
 
 
 @Service
@@ -32,6 +33,10 @@ public class ExerciseProgressService implements IExerciseProgressService{
     @Autowired
     IProgressService progress_serv;
 
+    @Autowired
+    ExerciseValidator exercise_validator;
+
+
     @Override
     public ExerciseProgressResponse attemptExerciseProgress(ExerciseProgressRequest attempt) {
         User user_attempt = user_repo.findById(attempt.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("Usuario con ID "+attempt.getUser_id()+" inexistente"));
@@ -39,14 +44,20 @@ public class ExerciseProgressService implements IExerciseProgressService{
 
         ExerciseProgress exercise_progress_obtained = exercise_progress_repo.findByUserIdAndExerciseExerciseId(attempt.getUser_id(), attempt.getExercise_id()).orElse(null);
 
-        if(exercise_progress_obtained != null) return existAttemptExerciseProgress(exercise_progress_obtained, attempt.getIs_correct());
+        Boolean is_correct = exercise_validator.validate(exercise_attempt, attempt.getAnswer());
+
+        if(exercise_progress_obtained != null ){
+            if(!exercise_progress_obtained.getCompleted()) return existAttemptExerciseProgress(exercise_progress_obtained, is_correct);
+
+            return Mapper.toDto(exercise_progress_obtained);
+        } 
         
 
         ExerciseProgress new_exercise_progress = ExerciseProgress.builder()
                                                             .user(user_attempt)
                                                             .exercise(exercise_attempt)
                                                             .attempts(1)
-                                                            .completed(attempt.getIs_correct() ? true : false)
+                                                            .completed(is_correct)
                                                             .lastAcessDate(LocalDateTime.now())
                                                             .build();
 

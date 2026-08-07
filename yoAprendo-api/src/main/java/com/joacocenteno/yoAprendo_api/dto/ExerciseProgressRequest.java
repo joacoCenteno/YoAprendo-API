@@ -3,16 +3,17 @@ package com.joacocenteno.yoAprendo_api.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import tools.jackson.databind.JsonNode;
 
 @Getter @Setter
 public class ExerciseProgressRequest {
 
     @NotNull 
-    Long user_id;
+    private Long user_id;
 
     @NotNull
-    Long exercise_id;
+    private Long exercise_id;
 
     @NotNull
-    Boolean is_correct;
+    private JsonNode answer;
 }

@@ -1,5 +1,10 @@
 package com.joacocenteno.yoAprendo_api.service.validation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.joacocenteno.yoAprendo_api.model.Exercise;
@@ -21,7 +26,19 @@ public class ExerciseValidator {
 
         switch (exercise_type) {
             case WRITE:
-                return compareText(json_content, answer);            
+                return compareText(json_content, answer);  
+                
+            case DRAG:
+                return compareDrag(json_content, answer);
+
+            case SORT:
+                return compareSort(json_content, answer);
+
+            case LISTEN:
+                return compareText(json_content, answer);
+
+            case RELATE:
+                return compareRelate(json_content, answer);
         
             default: 
                 return false;
@@ -42,5 +59,38 @@ public class ExerciseValidator {
         }
 
         return false;
+    }
+
+    private Boolean compareDrag(JsonNode content, JsonNode answer){
+        
+        Integer correct_option = content.get("solution").get("correctOptionId").asInt();
+
+        Integer received_option = content.get("selectedOptionId").asInt();
+
+        return received_option.equals(correct_option);
+    }
+
+    private Boolean compareSort(JsonNode content, JsonNode answer){
+
+        List<String> correct_order = new ArrayList<>();
+        content.get("solution").get("correctOrder").forEach(node -> correct_order.add(node.asString()));
+
+        List<String> received_order = new ArrayList<>();
+        answer.get("order").forEach(node -> received_order.add(node.asString()));
+
+        return correct_order.equals(received_order);
+    }
+
+    private Boolean compareRelate(JsonNode content, JsonNode answer){
+
+        Map<Integer, Integer> correct_pairs = new HashMap<>();
+        content.get("solution").get("pairs").forEach(pair ->
+            correct_pairs.put(pair.get("leftId").asInt(), pair.get("rightId").asInt()));
+
+        Map<Integer, Integer> received_pairs = new HashMap<>();
+        answer.get("pairs").forEach(pair ->
+            received_pairs.put(pair.get("leftId").asInt(), pair.get("rightId").asInt()));
+
+        return correct_pairs.equals(received_pairs);
     }
 }

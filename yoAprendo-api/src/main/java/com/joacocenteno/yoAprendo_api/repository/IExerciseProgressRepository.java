@@ -16,4 +16,5 @@ public interface IExerciseProgressRepository extends JpaRepository<ExerciseProgr
 
     Long countByUserIdAndExerciseLessonLessonIdAndCompletedTrue(Long user_id, Long lesson_id);
 
+    Integer countByUserIdAndCompletedTrue(Long user_id);
 }

@@ -119,6 +119,7 @@ public class Mapper {
                             .id(user.getId())
                             .name(user.getUserName())
                             .surname(user.getUserSurname())
+                            .userPlatformName(user.getUserPlatformName())
                             .rol(user.getUserRol())
                             .is_active(user.getUserActive())
                             .cecoe_id(user.getCecoe() != null ? user.getCecoe().getCecoeId() : null)

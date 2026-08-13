@@ -34,6 +34,9 @@ public class User {
     @Column(name = "user_surname", nullable = false, length = 100)
     private String userSurname;
 
+    @Column(name = "user_platform_name", nullable = false, length = 20)
+    private String userPlatformName;
+
     @Column(name = "user_password", nullable = false)
     private String password;
 

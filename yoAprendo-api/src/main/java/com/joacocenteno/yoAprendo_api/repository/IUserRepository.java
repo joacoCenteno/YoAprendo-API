@@ -13,6 +13,8 @@ import com.joacocenteno.yoAprendo_api.model.UserRol;
 public interface IUserRepository extends JpaRepository<User, Long>{
     Optional<User> findByEmail(String email);
 
+    Boolean existByUserPlatformName(String userPlatformName);
+
     List<User> findByCecoeCecoeId(Long cecoe_id);
 
     List<User> findByCecoeCecoeIdAndUserRol(Long cecoe_id, UserRol rol);

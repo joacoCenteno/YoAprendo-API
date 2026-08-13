@@ -51,11 +51,19 @@ public class UserService implements IUserService{
                                 .orElseThrow(() -> new ResourceNotFoundException("Cecoe con ID "+ user.getCecoe_id() + " inexistente"));
         }
 
+        String user_platform_name_created = createUserPlatformName(user);
+
+        while (existInPlatform(user_platform_name_created)) {
+
+            user_platform_name_created = createUserPlatformName(user);
+        }
+
         User user_created = User.builder()
                                 .userName(user.getName())
                                 .userSurname(user.getSurname())
                                 .email(user.getEmail())
                                 .password(user.getPassword())
+                                .userPlatformName(user_platform_name_created)
                                 .userRol(user.getRol())
                                 .userActive(user.getIs_active() != null ? user.getIs_active() : true)
                                 .cecoe(cecoe)
@@ -107,6 +115,16 @@ public class UserService implements IUserService{
         user_deactivated.setUserActive(!user_deactivated.getUserActive());
 
         user_repo.save(user_deactivated);
+    }
+
+    private String createUserPlatformName(UserRequest user){
+        Integer random_number = (int) (Math.random() * 999) + 1;
+
+        return user.getName().toLowerCase() + user.getSurname().toLowerCase() + random_number;
+    }
+
+    private boolean existInPlatform(String userNameCreated){
+        return user_repo.existByUserPlatformName(userNameCreated);
     }
 
 }

@@ -11,6 +11,7 @@ public class UserResponse {
     Long id;
     String name;
     String surname;
+    String userPlatformName;
     UserRol rol;
     Boolean is_active;
     Long cecoe_id;

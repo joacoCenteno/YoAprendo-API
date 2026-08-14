@@ -15,6 +15,8 @@ public interface IUserRepository extends JpaRepository<User, Long>{
 
     Boolean existByUserPlatformName(String userPlatformName);
 
+    Optional<User> findByUserPlatformName(String userPlatformName);
+
     List<User> findByCecoeCecoeId(Long cecoe_id);
 
     List<User> findByCecoeCecoeIdAndUserRol(Long cecoe_id, UserRol rol);

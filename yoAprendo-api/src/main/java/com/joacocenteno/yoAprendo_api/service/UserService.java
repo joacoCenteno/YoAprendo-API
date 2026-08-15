@@ -3,6 +3,10 @@ package com.joacocenteno.yoAprendo_api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.joacocenteno.yoAprendo_api.dto.UserRequest;
@@ -13,6 +17,7 @@ import com.joacocenteno.yoAprendo_api.exception.ResourceNotFoundException;
 import com.joacocenteno.yoAprendo_api.mapper.Mapper;
 import com.joacocenteno.yoAprendo_api.model.Cecoe;
 import com.joacocenteno.yoAprendo_api.model.User;
+import com.joacocenteno.yoAprendo_api.model.UserRol;
 import com.joacocenteno.yoAprendo_api.repository.ICecoeRepository;
 import com.joacocenteno.yoAprendo_api.repository.IUserRepository;
 
@@ -24,6 +29,9 @@ public class UserService implements IUserService{
 
     @Autowired
     ICecoeRepository cecoe_repo;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponse> getAllUsers() {
@@ -45,6 +53,18 @@ public class UserService implements IUserService{
         if(user == null) throw new BadRequestException("Por favor, especifique los datos del usuario");
         if(user_repo.findByEmail(user.getEmail()).isPresent()) throw new DuplicateResourceException("Usuario con email '"+ user.getEmail() + "' ya existente en la plataforma");
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String currentUserRole = authentication.getAuthorities()
+                                                .stream()
+                                                .findFirst()
+                                                .map(GrantedAuthority::getAuthority)
+                                                .orElse("");
+        
+        if(currentUserRole.equals("ROLE_SUPERVISOR") && user.getRol() != UserRol.STUDENT){
+            throw new BadRequestException("Un Supervisor solamente puede crear estudiantes");
+        }                                      
+
         Cecoe cecoe = null;
         if(user.getCecoe_id() != null){
             cecoe = cecoe_repo.findById(user.getCecoe_id())
@@ -62,7 +82,7 @@ public class UserService implements IUserService{
                                 .userName(user.getName())
                                 .userSurname(user.getSurname())
                                 .email(user.getEmail())
-                                .password(user.getPassword())
+                                .password(passwordEncoder.encode(user.getPassword()))
                                 .userPlatformName(user_platform_name_created)
                                 .userRol(user.getRol())
                                 .userActive(user.getIs_active() != null ? user.getIs_active() : true)
@@ -91,7 +111,7 @@ public class UserService implements IUserService{
 
         if(user.getName() != null) user_modified.setUserName(user.getName());
         if(user.getSurname() != null) user_modified.setUserSurname(user.getSurname());
-        if(user.getPassword() != null) user_modified.setPassword(user.getPassword());
+        if(user.getPassword() != null) user_modified.setPassword(passwordEncoder.encode(user.getPassword()));
         if(user.getRol() != null) user_modified.setUserRol(user.getRol());
         if(user.getIs_active() != null) user_modified.setUserActive(user.getIs_active());
 

@@ -8,9 +8,6 @@ import tools.jackson.databind.JsonNode;
 @Getter @Setter
 public class ExerciseProgressRequest {
 
-    @NotNull 
-    private Long user_id;
-
     @NotNull
     private Long exercise_id;
 

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.joacocenteno.yoAprendo_api.dto.ExerciseProgressRequest;
@@ -41,10 +43,16 @@ public class ExerciseProgressService implements IExerciseProgressService{
 
     @Override
     public ExerciseProgressResponse attemptExerciseProgress(ExerciseProgressRequest attempt) {
-        User user_attempt = user_repo.findById(attempt.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("Usuario con ID "+attempt.getUser_id()+" inexistente"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String userPlatformName = authentication.getName();
+        
+        User user_attempt = user_repo.findByUserPlatformName(userPlatformName).orElseThrow(() -> new ResourceNotFoundException("Usuario con ID "+userPlatformName+" inexistente"));
+
+
         Exercise exercise_attempt = exercise_repo.findById(attempt.getExercise_id()).orElseThrow(() -> new ResourceNotFoundException("Ejercicio con ID "+attempt.getExercise_id()+" inexistente"));
 
-        ExerciseProgress exercise_progress_obtained = exercise_progress_repo.findByUserIdAndExerciseExerciseId(attempt.getUser_id(), attempt.getExercise_id()).orElse(null);
+        ExerciseProgress exercise_progress_obtained = exercise_progress_repo.findByUserIdAndExerciseExerciseId(user_attempt.getId(), attempt.getExercise_id()).orElse(null);
 
         Boolean is_correct = exercise_validator.validate(exercise_attempt, attempt.getAnswer());
 

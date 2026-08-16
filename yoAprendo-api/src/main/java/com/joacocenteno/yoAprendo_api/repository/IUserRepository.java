@@ -13,7 +13,7 @@ import com.joacocenteno.yoAprendo_api.model.UserRol;
 public interface IUserRepository extends JpaRepository<User, Long>{
     Optional<User> findByEmail(String email);
 
-    Boolean existByUserPlatformName(String userPlatformName);
+    Boolean existsByUserPlatformName(String userPlatformName);
 
     Optional<User> findByUserPlatformName(String userPlatformName);
 

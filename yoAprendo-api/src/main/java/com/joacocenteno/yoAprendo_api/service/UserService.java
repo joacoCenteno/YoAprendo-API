@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,20 @@ public class UserService implements IUserService{
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return user_repo.findAll().stream().map(Mapper::toDto).toList();
+        List<User> users = user_repo.findAll();
+
+        User currentUser = getCurrentUser();
+
+        // Un SUPERVISOR solo ve los usuarios de su propio Cecoe
+        if (isSupervisor(currentUser)) {
+            Long cecoeId = currentUser.getCecoe() != null ? currentUser.getCecoe().getCecoeId() : null;
+
+            users = users.stream()
+                    .filter(u -> u.getCecoe() != null && u.getCecoe().getCecoeId().equals(cecoeId))
+                    .toList();
+        }
+
+        return users.stream().map(Mapper::toDto).toList();
     }
 
     @Override
@@ -45,6 +58,17 @@ public class UserService implements IUserService{
         User user_obtained = user_repo.findById(userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Usuario con ID "+ userId + " inexistente"));
 
+        User currentUser = getCurrentUser();
+
+        // Un SUPERVISOR no puede ver usuarios de otro Cecoe (no se filtra que existan)
+        if (isSupervisor(currentUser)) {
+            Long cecoeId = currentUser.getCecoe() != null ? currentUser.getCecoe().getCecoeId() : null;
+
+            if (user_obtained.getCecoe() == null || !user_obtained.getCecoe().getCecoeId().equals(cecoeId)) {
+                throw new ResourceNotFoundException("Usuario con ID "+ userId + " inexistente");
+            }
+        }
+
         return Mapper.toDto(user_obtained);
     }
 
@@ -53,22 +77,27 @@ public class UserService implements IUserService{
         if(user == null) throw new BadRequestException("Por favor, especifique los datos del usuario");
         if(user_repo.findByEmail(user.getEmail()).isPresent()) throw new DuplicateResourceException("Usuario con email '"+ user.getEmail() + "' ya existente en la plataforma");
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = getCurrentUser();
 
-        String currentUserRole = authentication.getAuthorities()
-                                                .stream()
-                                                .findFirst()
-                                                .map(GrantedAuthority::getAuthority)
-                                                .orElse("");
-        
-        if(currentUserRole.equals("ROLE_SUPERVISOR") && user.getRol() != UserRol.STUDENT){
-            throw new BadRequestException("Un Supervisor solamente puede crear estudiantes");
-        }                                      
+        if (isSupervisor(currentUser)) {
+            if (user.getRol() != UserRol.STUDENT) {
+                throw new BadRequestException("Un Supervisor solamente puede crear estudiantes");
+            }
+
+            if (user.getCecoe_id() != null
+                    && (currentUser.getCecoe() == null || !user.getCecoe_id().equals(currentUser.getCecoe().getCecoeId()))) {
+                throw new BadRequestException("Un Supervisor solo puede crear estudiantes de su propio Cecoe");
+            }
+        }
+
+        Long cecoeId = user.getCecoe_id() != null
+                ? user.getCecoe_id()
+                : (isSupervisor(currentUser) && currentUser.getCecoe() != null ? currentUser.getCecoe().getCecoeId() : null);
 
         Cecoe cecoe = null;
-        if(user.getCecoe_id() != null){
-            cecoe = cecoe_repo.findById(user.getCecoe_id())
-                                .orElseThrow(() -> new ResourceNotFoundException("Cecoe con ID "+ user.getCecoe_id() + " inexistente"));
+        if (cecoeId != null) {
+            cecoe = cecoe_repo.findById(cecoeId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Cecoe con ID "+ cecoeId + " inexistente"));
         }
 
         String user_platform_name_created = createUserPlatformName(user);
@@ -144,7 +173,22 @@ public class UserService implements IUserService{
     }
 
     private boolean existInPlatform(String userNameCreated){
-        return user_repo.existByUserPlatformName(userNameCreated);
+        return user_repo.existsByUserPlatformName(userNameCreated);
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            throw new BadRequestException("Sesión no autenticada");
+        }
+
+        return user_repo.findByUserPlatformName(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario autenticado inexistente"));
+    }
+
+    private boolean isSupervisor(User currentUser) {
+        return currentUser.getUserRol() == UserRol.SUPERVISOR;
     }
 
 }
